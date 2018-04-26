@@ -21,7 +21,7 @@ modulo_str:
 	b 		mod_head							# Sprung nach mod_head
 
 mod_loop:
-	addu	$a0, $a0, 1						# Setze Adresse auf nächsten koeffizienten
+	addu	$a0, $a0, 1						# Setze Adresse auf nächsten Koeffizienten
 
 	lbu		$t2, 0($a0)						# $t2 = ci in ASCII
 	addiu $t2, $t2, -48					# ASCII zu Ziffer

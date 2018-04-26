@@ -10,6 +10,12 @@
 # Funktion:
 # Schreibt BLZ und KNR in die entsprechenden Puffer
 iban2knr:
+	addu 	$sp, $sp, -16	# Lege Stack an
+	sw		$s0, 0($sp)		# Sichere s0
+	sw		$s1, 4($sp)		# Sichere s1
+	sw		$s2, 8($sp)		# Sichere s2
+	sw		$s3, 12($sp)	# Sichere s3
+
   move 	$s0, $a0		  # Sichere IBAN Puffer in $s0
 	move 	$s1, $a1		  # Sichere BLZ Puffer in $s1
 	move 	$s2, $a2		  # Sichere KNR Puffer in $s2
@@ -28,6 +34,11 @@ iban2knr:
 	jal 	store_bytes
 
 	move 	$ra, $s3		  # Lade Rücksprungadresse
+	lw		$s0, 0($sp)		# Restauriere s0
+	lw		$s1, 4($sp)		# Restauriere s1
+	lw		$s2, 8($sp)		# Restauriere s2
+	lw		$s3, 12($sp)	# Restauriere s3
+	addu 	$sp, $sp, 16	# Gebe Stack frei
 	jr		$ra
 
 

@@ -10,8 +10,6 @@
 # Rueckgabewert:
 # v0: Die im Puffer [$a0 bis $a0 + $a1 - 1] darstellte Dezimalzahl (kodiert in ASCII Ziffern '0' bis '9') modulo $a2
 modulo_str:
-	move 	$s0, $ra		 					# Sichere Rücksprungadresse in $s0
-
 	la 		$t1, 0($a0)
 	addu	$t1, $t1, $a1
 	addiu	$t1, $t1, -1					# $t1 = Zieladresse
@@ -37,7 +35,3 @@ mod_loop:
 mod_head:
 	bne 	$a0, $t1, mod_loop		# Abbruchbedingung
 	jr 		$ra
-
-
-	move 	$ra, $s3						  # Lade Rücksprungadresse
-	jr $ra

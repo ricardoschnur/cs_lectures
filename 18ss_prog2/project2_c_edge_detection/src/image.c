@@ -18,7 +18,7 @@ void array_destroy(float *m) {
 
 float *read_image_from_file(const char *filename, int *w, int *h) {
 	FILE *fp;
-	char format[2];
+	char format[3] = { 'a', 'a', '\0' };
 	int size, i;
 	int max;
 
@@ -29,11 +29,15 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 		return NULL;
 	}
 	if ( strcmp(format, "P2") != 0 ) {
+		printf("format = %s\n", format);
 		return NULL;
 	}
 
-	// Read width and hight
-	if( fscanf(fp, "%d%d", w, h) != 2 ) {
+	// Read width and height
+	if( fscanf(fp, "%d", w) != 1 ) {
+		return NULL;
+	}
+	if( fscanf(fp, "%d", h) != 1 ) {
 		return NULL;
 	}
 
@@ -54,10 +58,12 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 	}
 
 
-	// Check if too many ot too few points
+	// Check if too many or too few points
 	if ( i != size && fscanf( fp, "%f", &(img[i]) ) == 1 ) {
 		return NULL;
 	}
+
+
 
 	fclose(fp);
 	return img;
@@ -70,11 +76,14 @@ void write_image_to_file(float *img, int w, int h, const char *filename) {
 	fp = fopen(filename, "w");
 
 	// Print header
-	fprintf(fp, "P2\n%d %d\n255\n", w, h);
+	fprintf(fp, "P2\n%d %d\n255", w, h);
 
 	// Print points
 	size = w * h;
 	for (int i = 0; i < size; ++i) {
+		if ( i%w == 0) {
+			fprintf(fp, "\n");
+		}
 		rounded = (int)roundf(img[i]);
 		fprintf(fp, "%d ", rounded);
 	}

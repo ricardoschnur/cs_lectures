@@ -53,12 +53,34 @@ float get_pixel_value(float *img, int w, int h, int x, int y) {
 }
 
 void scale_image(float *result, float *img, int w, int h) {
-	(void)result;
-	(void)img;
-	(void)w;
-	(void)h;
+	float min, max, coeff;
+	int size;
+	size = w * h;
 
-	// TODO: Implement me!
+	if (size == 0)
+		return;
+
+	// Determine min and max values
+	min = img[0];
+	max = img[0];
+	for(int i = 1; i < size; ++i){
+		min = (img[i] < min) ? img[i] : min;
+		max = (img[i] > max) ? img[i] : max;
+	}
+
+	// All values are equal
+	if ( fabs(max-min) < 1E-20 ){
+		for(int i = 0; i < size; ++i){
+			result[i] = 0;
+		}
+		return;
+	}
+
+	// Not all values are equal
+	coeff = 255.0 / (max - min);
+	for(int i = 0; i < size; ++i){
+		result[i] = coeff * ( img[i] - min );
+	}
 }
 
 void apply_threshold(float *img, int w, int h, int T) {

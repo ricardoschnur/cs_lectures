@@ -7,6 +7,7 @@
 #include "convolution.h"
 #include "derivation.h"
 #include "image.h"
+#include "math.h"
 
 const float sobel_x[9] = {
 	1, 0, -1,
@@ -29,11 +30,10 @@ void derivation_y_direction(float *result, float *img, int w, int h) {
 }
 
 void gradient_magnitude(float *result, float *d_x, float *d_y, int w, int h) {
-	(void)result;
-	(void)d_x;
-	(void)d_y;
-	(void)w;
-	(void)h;
+	int size;
+	size = w * h;
 
-	// TODO: Implement me!
+	for(int i = 0; i < size; ++i){
+		result[i] = sqrtf( d_x[i] * d_x[i] + d_y[i] * d_y[i] );
+	}
 }

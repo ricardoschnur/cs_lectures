@@ -25,7 +25,7 @@ ${BUILD_DIR}/%.o: ${SRC_DIR}/%.c
 
 ${BIN_DIR}/edgedetection: ${OBJECTS}
 	$(shell mkdir -p ${BIN_DIR})
-	-$(CC) -o ${BIN_DIR}/edgedetection ${CFLAGS} ${LDFLAGS} ${OBJECTS}
+	-$(CC) -o ${BIN_DIR}/edgedetection ${CFLAGS} ${OBJECTS} ${LDFLAGS}
 
 ${BIN_DIR}/image.so: ${SRC_DIR}/image.c
 	$(shell mkdir -p ${BIN_DIR})

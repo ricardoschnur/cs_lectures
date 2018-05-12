@@ -25,9 +25,10 @@ int main(int const argc, char **const argv) {
 	 float *img;
 	 int w, h, size;
 
-
-
 	 img = read_image_from_file(image_file_name, &w, &h);
+	 if (img == NULL) {
+		 return 1;
+	 }
 	 size = w*h;
 
 

@@ -41,6 +41,11 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 		return NULL;
 	}
 
+	// Check width and height for sane values
+	if ( *w <= 0 ||  *h <= 0 ) {
+		return NULL;
+	}
+
 	// Read maximal value; has to be 255
 	if( fscanf(fp, "%d", &max) != 1 ) {
 		return NULL;
@@ -59,7 +64,7 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 
 
 	// Check if too many or too few points
-	if ( i != size && fscanf( fp, "%f", &(img[i]) ) == 1 ) {
+	if ( i != size || fscanf( fp, "%f", &(img[i]) ) == 1 ) {
 		return NULL;
 	}
 

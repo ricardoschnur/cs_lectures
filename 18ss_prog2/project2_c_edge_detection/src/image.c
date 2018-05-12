@@ -41,15 +41,38 @@ void write_image_to_file(float *img, int w, int h, const char *filename) {
 }
 
 float get_pixel_value(float *img, int w, int h, int x, int y) {
-	(void)img;
-	(void)w;
-	(void)h;
-	(void)x;
-	(void)y;
+	// Consider nine cases, every combination of the following:
+	// x < 0, 0 <= x < w, x >= w
+	// y < 0, 0 <= y < h, y >= h
+	int x_new, y_new;
 
-	// TODO: Implement me!
+	// x value
+	if (x<0) {
+		x_new = -x-1;
+	}
 
-	return 0;
+	if (x>=w) {
+		x_new = 2*w-x-1;
+	}
+
+	if (x >= 0 && x < w) {
+		x_new = x;
+	}
+
+	// y value
+	if (y<0) {
+		y_new = -y-1;
+	}
+
+	if (y>=h) {
+		y_new = 2*h-y-1;
+	}
+
+	if (y >= 0 && y < h){
+		y_new = y;
+	}
+
+	return img[x_new + w * y_new];
 }
 
 void scale_image(float *result, float *img, int w, int h) {

@@ -62,10 +62,10 @@ void scale_image(float *result, float *img, int w, int h) {
 }
 
 void apply_threshold(float *img, int w, int h, int T) {
-	(void)img;
-	(void)w;
-	(void)h;
-	(void)T;
+	int size;
+	size = w * h;
 
-	// TODO: Implement me!
+	for(int i = 0; i < size; ++i){
+		img[i] = (img[i] > T) ? 255 : 0;
+	}
 }

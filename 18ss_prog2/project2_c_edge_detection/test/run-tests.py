@@ -20,7 +20,7 @@ for test in TEST_SUITE:
 
 if args.list:
     for test in all_tests:
-        print(test)
+        print(test.get_name())
     exit(0)
 
 run_tests(args, all_tests)

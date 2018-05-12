@@ -16,10 +16,10 @@ int main(int const argc, char **const argv) {
 	printf("Computing edges for image file %s with threshold %i\n", image_file_name, threshold);
 
 	/**
-	 * Read Image from given file. 
+	 * Read Image from given file.
 	 * If the input file is broken terminate with return value 1.
 	 * Hint: The width and height of the image have to be accessible in the
-	 * scope of this function. 
+	 * scope of this function.
 	 */
 	// TODO: Implement me!
 

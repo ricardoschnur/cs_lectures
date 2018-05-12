@@ -8,36 +8,78 @@
 #include "image.h"
 
 float *array_init(int size) {
-	(void)size;
-
-	// TODO: Implement me!
-
-	return NULL;
+	float *p = malloc( size * sizeof(p[0]) );
+	return p;
 }
 
 void array_destroy(float *m) {
-	(void)m;
-
-	// TODO: Implement me!
+	free(m);
 }
 
 float *read_image_from_file(const char *filename, int *w, int *h) {
-	(void)filename;
-	(void)w;
-	(void)h;
+	FILE *fp;
+	char format[2];
+	int size, i;
+	int max;
 
-	// TODO: Implement me!
+	fp = fopen(filename, "r");
 
-	return NULL;
+	// Check if file starts with "P2"
+	if( fscanf(fp, "%c%c", &(format[0]), &(format[1])) != 2 ) {
+		return NULL;
+	}
+	if ( strcmp(format, "P2") != 0 ) {
+		return NULL;
+	}
+
+	// Read width and hight
+	if( fscanf(fp, "%d%d", w, h) != 2 ) {
+		return NULL;
+	}
+
+	// Read maximal value; has to be 255
+	if( fscanf(fp, "%d", &max) != 1 ) {
+		return NULL;
+	}
+	if( max != 255 ) {
+		return NULL;
+	}
+
+	size = (*w) * (*h);
+	float *img = array_init(size);
+
+	i = 0;
+	while( i<size && fscanf( fp, "%f", &(img[i]) ) == 1 )  {
+		++i;
+	}
+
+
+	// Check if too many ot too few points
+	if ( i != size && fscanf( fp, "%f", &(img[i]) ) == 1 ) {
+		return NULL;
+	}
+
+	fclose(fp);
+	return img;
 }
 
 void write_image_to_file(float *img, int w, int h, const char *filename) {
-	(void)img;
-	(void)w;
-	(void)h;
-	(void)filename;
+	FILE *fp;
+	int size, rounded;
 
-	// TODO: Implement me!
+	fp = fopen(filename, "w");
+
+	// Print header
+	fprintf(fp, "P2\n%d %d\n255\n", w, h);
+
+	// Print points
+	size = w * h;
+	for (int i = 0; i < size; ++i) {
+		rounded = (int)roundf(img[i]);
+		fprintf(fp, "%d ", rounded);
+	}
+
+	fclose(fp);
 }
 
 float get_pixel_value(float *img, int w, int h, int x, int y) {

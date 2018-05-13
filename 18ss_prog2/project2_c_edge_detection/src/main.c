@@ -27,6 +27,7 @@ int main(int const argc, char **const argv) {
 
 	 img = read_image_from_file(image_file_name, &w, &h);
 	 if (img == NULL) {
+		 fprintf(stderr, "Invalid file: %s\n", image_file_name);
 		 return 1;
 	 }
 	 size = w*h;

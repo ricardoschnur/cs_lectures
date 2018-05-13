@@ -23,6 +23,10 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 	int max;
 
 	fp = fopen(filename, "r");
+	// Check if file opened
+	if (fp == NULL) {
+		return NULL;
+	}
 
 	// Check if file starts with "P2"
 	if( fscanf(fp, "%c%c", &(format[0]), &(format[1])) != 2 ) {

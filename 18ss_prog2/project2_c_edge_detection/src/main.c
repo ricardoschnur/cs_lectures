@@ -22,7 +22,7 @@ int main(int const argc, char **const argv) {
 	 * scope of this function.
 	 */
 
-	 float *img;
+	 float *img = NULL;
 	 int w, h, size;
 
 	 img = read_image_from_file(image_file_name, &w, &h);

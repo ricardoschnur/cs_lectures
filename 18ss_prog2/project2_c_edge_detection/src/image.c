@@ -72,8 +72,6 @@ float *read_image_from_file(const char *filename, int *w, int *h) {
 		return NULL;
 	}
 
-
-
 	fclose(fp);
 	return img;
 }

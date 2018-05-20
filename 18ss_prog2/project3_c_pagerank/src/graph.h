@@ -12,13 +12,13 @@ typedef struct graph graph_t;
 
 /*
   Initialize an empty graph G.
-  You are responsible to free memory with graphDestroy(*G)!
+  You are responsible to free memory with graphDestroy(G)!
 */
 graph_t *graphInit();
 
 /*
   Reads a graph from file and return a pointer to it.
-  You are responsible to free memory with graphDestroy(*G)!
+  You are responsible to free memory with graphDestroy(G)!
 */
 graph_t *graphFromFile(FILE *fp);
 
@@ -71,6 +71,5 @@ unsigned outdeg(graph_t *G, unsigned i);
 
 // Return the destination of the j-th edge of the i-th node of G
 unsigned followEdge(graph_t *G, unsigned i, unsigned j);
-
 
 #endif

@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,6 +52,45 @@ typedef struct graph {
   Static functions
   -------------------------------------------------------------------------
 */
+
+/*
+  Checks whether str is a valid name for an idenfitier.
+  Constraints:
+    - max. 256 characters
+    - first character has to be a letter
+    - remaining characteres have to be letters or numbers
+*/
+static int isidentifier(const char *str){
+  // Check if str actually points to a string
+  if (str == NULL) {
+    return 0;
+  }
+
+  int i = 0;
+
+  // Check if label longer than 256 characters
+  while (str[i] != '\0' && i < 256) {
+    ++i;
+  }
+  if (i == 256 && str[i] != '\0') {
+    return 0;
+  }
+
+  // Check if first character is a letter
+  if (!isalpha(str[0])) {
+    return 0;
+  }
+
+  i = 1;
+  while (str[i] != '\0') {
+    if (!isalnum(str[i])) {
+      return 0;
+    }
+    ++i;
+  }
+
+  return 1;
+}
 
 //  Initialize a node with name label and increase nodecount of G by 1
 static node_t *nodeInit(graph_t *G, const char* label) {
@@ -148,18 +188,11 @@ graph_t *graphInit(const char* label) {
   G->head = NULL;                       // no first node
 
   // Set label of G to label
-  int i = 0;
-  while (label[i] != '\0' && i < 256) {
-    (G->label)[i] = label[i];
-    ++i;
+  if (!isidentifier(label)) {
+    printf("Error: '%s' is not a valid identifier.\n", label);
+    exit(1);
   }
-  // Check if label longer than 256 characters
-  if (i == 256 && label[i] != '\0') {
-    fprintf(stderr, "Error: Label of node exceeds ");
-    fprintf(stderr, "maximal number of characters (256)\n");
-    exit(1);                 // Stop program with error code 1
-  }
-  (G->label)[i] = '\0';
+  strcpy(G->label, label);
 
   return G;
 }
@@ -208,31 +241,41 @@ void stats(graph_t *G) {
   unsigned minin, maxin, minout, maxout;
   node_t *V = G->head;
 
-  minin = V->indeg;
-  maxin = V->indeg;
-  minout = V->outdeg;
-  maxout = V->outdeg;
-
-  for (unsigned i = 1; i < G->nodecount; ++i) {
-    V = V->next;
-
-    if(V->indeg < minin) {
-      minin = V->indeg;
-    }
-
-    if(V->indeg > maxin) {
-      maxin = V->indeg;
-    }
-
-    if(V->outdeg < minout) {
-      minout = V->outdeg;
-    }
-
-    if(V->outdeg > maxout) {
-      maxout = V->outdeg;
-    }
+  // Check if G is empty
+  if (G->nodecount == 0) {
+  minin = 0;
+  maxin = 0;
+  minout = 0;
+  maxout = 0;
   }
 
+  // G is not empty
+  else {
+    minin = V->indeg;
+    maxin = V->indeg;
+    minout = V->outdeg;
+    maxout = V->outdeg;
+
+    for (unsigned i = 1; i < G->nodecount; ++i) {
+      V = V->next;
+
+      if(V->indeg < minin) {
+        minin = V->indeg;
+      }
+
+      if(V->indeg > maxin) {
+        maxin = V->indeg;
+      }
+
+      if(V->outdeg < minout) {
+        minout = V->outdeg;
+      }
+
+      if(V->outdeg > maxout) {
+        maxout = V->outdeg;
+      }
+    }
+  }
 
   printf("%s:\n", G->label);
   printf("- num nodes: %u\n", G->nodecount);
@@ -260,8 +303,6 @@ void addEdge(graph_t *G, const char* origin, const char* destination){
   }
 
   edgeInit(G, V, W);
-  printf(" V->edges->destination: %d\n",  V->edges->destination);
-  printf(" V->edges->next == NULL: %d\n",  V->edges->next == NULL);
   return;
 }
 
@@ -284,4 +325,54 @@ void graphPrint(graph_t *G){
   }
 
   printf("}\n");
+}
+
+
+graph_t *graphFromFile(FILE *fp) {
+  char string[257];
+
+  // Check if file starts with keyword 'digraph'
+  fscanf(fp, "%s", string);
+  if (strcmp(string, "digraph") != 0) {
+    printf("Error: Could not read graph from file.\n");
+    exit(1);
+  }
+
+  // Read name and initialize the graph
+  fscanf(fp, "%s", string);
+  if (!isidentifier(string)) {
+    printf("Error: '%s' is not a valid identifier.\n", string);
+    exit(1);
+  }
+  graph_t *G = graphInit(string);
+
+  // Check for '{'
+  fscanf(fp, "%s", string);
+  if (strcmp(string, "{") != 0) {
+    printf("Error: Could not read graph from file.\n");
+    exit(1);
+  }
+
+  // Get edges
+  char origin[257], destination[257];
+  while (fscanf(fp, "%s -> %[^;];", origin, destination) == 2) {
+    if (!isidentifier(origin)) {
+      printf("Error: '%s' is not a valid identifier.\n", origin);
+      exit(1);
+    }
+    if (!isidentifier(destination)) {
+      printf("Error: '%s' is not a valid identifier.\n", destination);
+      exit(1);
+    }
+
+    addEdge(G, origin, destination);
+  }
+
+  // Check if all edges were read or if there was an error
+  if (strcmp(origin, "}") != 0) {
+    printf("Error: Could not read graph from file.\n");
+    exit(1);
+  }
+
+  return G;
 }

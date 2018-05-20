@@ -85,13 +85,13 @@ int parse__command_line_arguments(int argc, char *const *argv,
   }
 
   // Check if mvalue > 0
-  if (*mvalue <= 0) {
+  if (*m == 1 && *mvalue <= 0) {
     fprintf (stderr, "Error: Argument %d of [-m] has to be a positive integer.\n", *mvalue);
     return 1;
   }
 
   // Check if rvalue > 0
-  if (*rvalue <= 0) {
+  if (*r == 1 && *rvalue <= 0) {
     fprintf (stderr, "Error: Argument %d of [-r] has to be a positive integer.\n", *rvalue);
     return 1;
   }

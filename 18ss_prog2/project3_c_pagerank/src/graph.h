@@ -14,6 +14,12 @@ typedef struct graph graph_t;
 */
 graph_t *graphInit();
 
+/*
+  Reads a graph from file and return a pointer to it.
+  You are responsible to free memory with graphDestroy(*G)!
+*/
+graph_t *graphFromFile(FILE *fp);
+
 
 // Destroy graph and free memory
 void graphDestroy(graph_t *G);

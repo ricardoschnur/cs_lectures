@@ -68,9 +68,10 @@ int parse__command_line_arguments(int argc, char *const *argv,
 
   // Check if any non-option arguments aside from filename remain
   if (argc - optind > 1) {
-    for (int i = optind; i < argc - 1; ++i)
+    for (int i = optind; i < argc - 1; ++i) {
       fprintf (stderr, "Error: Unknown argument: %s\n", argv[i]);
-      return 1;
+    }
+    return 1;
   }
 
   // Check if pvalue is set, otherwise default to pvalue = 10

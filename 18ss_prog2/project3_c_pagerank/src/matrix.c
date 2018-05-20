@@ -62,6 +62,17 @@ void matrixSet(matrix_t *A, unsigned i, unsigned j, double val) {
 }
 
 
+
+double matrixGet(matrix_t *A, unsigned i, unsigned j) {
+  if (i >= A->rows || j > A->cols) {
+    fprintf(stderr, "Error: Out of bounds.\n");
+    exit(1);
+  }
+
+  return (A->values)[i][j];
+}
+
+
 void matrixMult(matrix_t *A, matrix_t *B, matrix_t *C) {
   double sum;
 
@@ -85,5 +96,19 @@ void matrixPrint(matrix_t *A) {
       printf("%.10f  ", (A->values)[i][j]);
     }
     printf("\n");
+  }
+}
+
+
+void matrixCopy(matrix_t *A, matrix_t *B) {
+  if (A->rows != B->rows || A->cols != B->cols) {
+    fprintf(stderr, "Error: Dimension do not match.\n");
+    exit(1);
+  }
+
+  for (unsigned i = 0; i < A->rows; ++i) {
+    for (unsigned j = 0; j < A->cols; ++j) {
+      (A->values)[i][j] = (B->values)[i][j];
+    }
   }
 }

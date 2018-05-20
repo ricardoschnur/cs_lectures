@@ -176,7 +176,7 @@ static void nodeDestroy(node_t *V){
 
 
 // Jump i nodes ahead
-node_t *traverseNodes(node_t *V, unsigned i) {
+static node_t *traverseNodes(node_t *V, unsigned i) {
   while (i > 0) {
     V = V->next;
     --i;
@@ -186,7 +186,7 @@ node_t *traverseNodes(node_t *V, unsigned i) {
 
 
 // Jump i edges ahead
-edge_t *traverseEdges(edge_t *E, unsigned i) {
+static edge_t *traverseEdges(edge_t *E, unsigned i) {
   while (i > 0) {
     E = E->next;
     --i;
@@ -437,4 +437,25 @@ unsigned followEdge(graph_t *G, unsigned i, unsigned j) {
   E = traverseEdges(E, j);
 
   return E->destination;
+}
+
+
+unsigned localedgecount(graph_t *G, unsigned i, unsigned j) {
+  unsigned count = 0;
+  node_t *V = G->head;
+  V = traverseNodes(V, i);
+
+  edge_t *E = V->edges;
+  if (E->destination == j) {
+    count += 1;
+  }
+
+  for (unsigned k = 1; k < V->outdeg; ++k) {
+    E = traverseEdges(E, 1);
+    if (E->destination == j) {
+      count += 1;
+    }
+  }
+
+  return count;
 }

@@ -20,6 +20,10 @@ void matrixDestroy(matrix_t *A);
 void matrixSet(matrix_t *A, unsigned i, unsigned j, double val);
 
 
+// Return the (i,j)-th entry of A
+double matrixGet(matrix_t *A, unsigned i, unsigned j);
+
+
 /*
   Multiply a (m x n)-matrix A with a (n x l)-matrix B
   and store the result in a (m x l)-matrix C
@@ -29,5 +33,9 @@ void matrixMult(matrix_t *A, matrix_t *B, matrix_t *C);
 
 // Print matrix A
 void matrixPrint(matrix_t *A);
+
+
+// Copy matrix B into A
+void matrixCopy(matrix_t *A, matrix_t *B);
 
 #endif

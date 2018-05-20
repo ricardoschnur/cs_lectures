@@ -72,4 +72,8 @@ unsigned outdeg(graph_t *G, unsigned i);
 // Return the destination of the j-th edge of the i-th node of G
 unsigned followEdge(graph_t *G, unsigned i, unsigned j);
 
+
+// Return the number of edges from the i-th to the j-tj node of G
+unsigned localedgecount(graph_t *G, unsigned i, unsigned j);
+
 #endif

@@ -2,7 +2,7 @@ MKDIR      ?= mkdir -p
 CPP        ?= cpp
 CC         ?= cc
 
-CFLAGS    += -std=c11 -Wall -pedantic
+CFLAGS    += -std=c11 -Wextra -Wall -pedantic -Werror
 CPPFLAGS  += -MMD -I.
 LDFLAGS   += -lm -lpthread -ldl
 

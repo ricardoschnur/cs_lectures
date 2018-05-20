@@ -175,6 +175,26 @@ static void nodeDestroy(node_t *V){
 }
 
 
+// Jump i nodes ahead
+node_t *traverseNodes(node_t *V, unsigned i) {
+  while (i > 0) {
+    V = V->next;
+    --i;
+  }
+  return V;
+}
+
+
+// Jump i edges ahead
+edge_t *traverseEdges(edge_t *E, unsigned i) {
+  while (i > 0) {
+    E = E->next;
+    --i;
+  }
+  return E;
+}
+
+
 /*
   -------------------------------------------------------------------------
   Global functions
@@ -395,11 +415,26 @@ unsigned edgecount(graph_t *G) {
 
 char *nodelabel(graph_t *G, unsigned i) {
   node_t *p = G->head;
-
-  while (i > 0) {
-    p = p->next;
-    --i;
-  }
+  p = traverseNodes(p, i);
 
   return p->label;
+}
+
+
+unsigned outdeg(graph_t *G, unsigned i) {
+  node_t *p = G->head;
+  p = traverseNodes(p, i);
+
+  return p->outdeg;
+}
+
+
+unsigned followEdge(graph_t *G, unsigned i, unsigned j) {
+  node_t *V = G->head;
+  V = traverseNodes(V, i);
+
+  edge_t *E = V->edges;
+  E = traverseEdges(E, j);
+
+  return E->destination;
 }

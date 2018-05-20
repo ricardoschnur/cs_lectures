@@ -80,18 +80,23 @@ int main(int argc, char *const *argv) {
 
     // Case graph not empty
     double array[nodes];
-    for (unsigned i = 0; i < nodes; ++i) {
-      array[i] = 0;
-    }
 
     // Calculate with Markow chain
     if (m == 1) {
+      // initialize array with zeroes
+      for (unsigned i = 0; i < nodes; ++i) {
+        array[i] = 0;
+      }
       markow(G, array, mvalue, pvalue);
       pagerankPrint(G, array);
     }
 
     // Calculate with random surfer method
     if (r == 1) {
+      // initialize array with zeroes
+      for (unsigned i = 0; i < nodes; ++i) {
+        array[i] = 0;
+      } 
       randomsurfer(G, array, rvalue, pvalue);
       pagerankPrint(G, array);
     }

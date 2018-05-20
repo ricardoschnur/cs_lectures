@@ -65,4 +65,12 @@ unsigned edgecount(graph_t *G);
 char *nodelabel(graph_t *G, unsigned i);
 
 
+// Return the outdegree of the i-th node of G
+unsigned outdeg(graph_t *G, unsigned i);
+
+
+// Return the destination of the j-th edge of the i-th node of G
+unsigned followEdge(graph_t *G, unsigned i, unsigned j);
+
+
 #endif

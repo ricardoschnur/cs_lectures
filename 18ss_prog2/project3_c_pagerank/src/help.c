@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void print_help() {
+void helpPrint() {
   printf("This program calculates the PageRank of a graph.\n\n");
   printf("    pagerank [OPTIONS] [FILE]\n\n");
   printf("    -h\n      show help\n\n");

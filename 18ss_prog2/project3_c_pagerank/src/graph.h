@@ -1,6 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <stdio.h>
+
 /*
   Datatype for directed graphs
   Note that parallel edges and self-edges are allowed!
@@ -45,6 +47,22 @@ void addEdge(graph_t *G, const char* origin, const char* destination);
   number of nodes, number of edges, minimal and maximal in-/ and out-degrees
 */
 void stats(graph_t *G);
+
+
+// Return the name of G, at most 257 characters
+char *label(graph_t *G);
+
+
+// Return the number of vertices of G
+unsigned nodecount(graph_t *G);
+
+
+// Return the number of edges of G
+unsigned edgecount(graph_t *G);
+
+
+// Return the name of the i-th node of G, 0 <= i < nodecount(G), at most 257 characters
+char *nodelabel(graph_t *G, unsigned i);
 
 
 #endif

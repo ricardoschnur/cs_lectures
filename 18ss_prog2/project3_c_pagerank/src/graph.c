@@ -376,3 +376,30 @@ graph_t *graphFromFile(FILE *fp) {
 
   return G;
 }
+
+
+char *label(graph_t *G) {
+  return G->label;
+}
+
+
+unsigned nodecount(graph_t *G) {
+  return G->nodecount;
+}
+
+
+unsigned edgecount(graph_t *G) {
+  return G->edgecount;
+}
+
+
+char *nodelabel(graph_t *G, unsigned i) {
+  node_t *p = G->head;
+
+  while (i > 0) {
+    p = p->next;
+    --i;
+  }
+
+  return p->label;
+}

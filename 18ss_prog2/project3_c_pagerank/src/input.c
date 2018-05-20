@@ -54,6 +54,7 @@ int parse__command_line_arguments(int argc, char *const *argv,
         *s = 1;
         break;
       default:
+        fprintf (stderr, "Error: Could not parse arguments.\n");
         return 1;
       }
 
@@ -66,9 +67,9 @@ int parse__command_line_arguments(int argc, char *const *argv,
   }
 
   // Check if any non-option arguments aside from filename remain
-  if (argc - optind != 1) {
+  if (argc - optind > 1) {
     for (int i = optind; i < argc - 1; ++i)
-      printf ("Error: Unknown argument: %s\n", argv[i]);
+      fprintf (stderr, "Error: Unknown argument: %s\n", argv[i]);
       return 1;
   }
 

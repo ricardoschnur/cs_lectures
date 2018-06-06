@@ -52,7 +52,7 @@ public class GUI implements UserInterface {
 	 * are pressed "constantly" or a computer player is used to choose the move
 	 * direction.
 	 */
-	private final int IDLE_TIME = 100;
+	private final int IDLE_TIME = 1;
 
 	/**
 	 * The width of the window.

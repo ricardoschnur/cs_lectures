@@ -314,7 +314,7 @@ public class SimulatorImpl implements SimulatorInterface {
 	    boolean full2 = getFullAt(x2, y2);
 
 
-	    assert( !(val1 == val2 && full1 == true && full2 == true) );
+	    assert( val1 == val2 && full1 == true && full2 == true );
 
 	    int doubled_value = 2*val1;
 

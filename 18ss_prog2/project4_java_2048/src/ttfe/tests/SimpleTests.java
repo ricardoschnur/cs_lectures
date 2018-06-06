@@ -262,26 +262,7 @@ public class SimpleTests {
 			}
 		}
 	}
-	
-
-	
-
-	// Tests for public int getPoints();
-	@Test
-	public void testGetPointsInitial() {
-		assertEquals("The initial game did not have zero points", 0,
-				game1.getPoints());
-		assertEquals("The initial game did not have zero points", 0,
-				game2.getPoints());
-		assertEquals("The initial game did not have zero points", 0,
-				game3.getPoints());
-		assertEquals("The initial game did not have zero points", 0,
-				game4.getPoints());
-		assertEquals("The initial game did not have zero points", 0,
-				game5.getPoints());
-	}
-	// TODO IMPLEMENT ME
-	
+		
 
 	// Tests for public int getPieceAt(int x, int y);
 	@Test
@@ -370,10 +351,6 @@ public class SimpleTests {
 	}
 	
 
-	// Tests for public boolean isMovePossible(MoveDirection direction);
-	// TODO IMPLEMENT ME
-	
-
 	// Tests for public boolean isSpaceLeft();
 	@Test
 	public void testIsSpaceLeftInitial() {
@@ -391,7 +368,6 @@ public class SimpleTests {
 
 	@Test
 	public void testIsSpaceLeftEmpty() {	
-		
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 3; j++) {
 				game3.setPieceAt(i, j, 0);
@@ -417,8 +393,430 @@ public class SimpleTests {
 		assertTrue("There should be no more space left",
 				false == game5.isSpaceLeft());
 	}
+
+
+	// Tests for public int getPoints();
+	@Test
+	public void testGetPointsInitial() {
+		assertEquals("The initial game did not have zero points", 0,
+				game1.getPoints());
+		assertEquals("The initial game did not have zero points", 0,
+				game2.getPoints());
+		assertEquals("The initial game did not have zero points", 0,
+				game3.getPoints());
+		assertEquals("The initial game did not have zero points", 0,
+				game4.getPoints());
+		assertEquals("The initial game did not have zero points", 0,
+				game5.getPoints());
+	}
+
+	
+	@Test
+	public void testGetPointsSingleMerge() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 0);
+			}
+		}
+		game3.setPieceAt(0, 0, 2048);
+		game3.setPieceAt(0, 1, 2048);
+		game3.performMove(MoveDirection.NORTH);
+		
+		assertEquals("Expected 4096 points", 4096, game3.getPoints());
+	}
+	
+	@Test
+	public void testGetPointsNotPowerOfTwo() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 0);
+			}
+		}
+		game3.setPieceAt(0, 0, 7);
+		game3.setPieceAt(0, 1, 7);
+		game3.performMove(MoveDirection.NORTH);
+		
+		assertEquals("Expected 14 points", 14, game3.getPoints());
+	}
+	
+	@Test
+	public void testGetPointsMultipleMerges() {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				game1.setPieceAt(i, j, 2);
+			}
+		}
+		game1.performMove(MoveDirection.NORTH);
+		
+		assertEquals("Expected 32 points", 32, game1.getPoints());
+	}
 	
 
 	// Tests for public boolean performMove(MoveDirection direction);
-	// TODO IMPLEMENT ME
+	@Test
+	public void testPerformMoveMoving() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 8; j++) {
+				game2.setPieceAt(i, j, 0);
+			}
+		}
+
+		assertTrue("Empty board, no move should be possible", false == game2.performMove(MoveDirection.NORTH));
+		assertTrue("Empty board, no move should be possible", false == game2.performMove(MoveDirection.EAST));
+		assertTrue("Empty board, no move should be possible", false == game2.performMove(MoveDirection.SOUTH));
+		assertTrue("Empty board, no move should be possible", false == game2.performMove(MoveDirection.WEST));
+				
+		game2.setPieceAt(0, 0, 7);
+		// Go in a circle around the board
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.NORTH));
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.WEST));
+		assertTrue("Only piece at upper left corner", true == game2.performMove(MoveDirection.EAST));
+
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.NORTH));
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.EAST));
+		assertTrue("Only piece at upper left corner", true == game2.performMove(MoveDirection.SOUTH));	
+
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.SOUTH));
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.EAST));
+		assertTrue("Only piece at upper left corner", true == game2.performMove(MoveDirection.WEST));
+		
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.SOUTH));
+		assertTrue("Only piece at upper left corner", false == game2.performMove(MoveDirection.WEST));
+		assertTrue("Only piece at upper left corner", true == game2.performMove(MoveDirection.NORTH));		
+	}
+	
+	
+	@Test
+	public void testPerformMoveFull() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				game5.setPieceAt(i, j, 1 + i * 2 + j);
+			}
+		}
+		
+		assertTrue("Full board, no move should be possible", false == game5.performMove(MoveDirection.NORTH));
+		assertTrue("Full board, no move should be possible", false == game5.performMove(MoveDirection.EAST));
+		assertTrue("Full board, no move should be possible", false == game5.performMove(MoveDirection.SOUTH));
+		assertTrue("Full board, no move should be possible", false == game5.performMove(MoveDirection.WEST));
+	}
+	
+
+	
+	@Test
+	public void testPerformMoveMergeNORTH() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				game5.setPieceAt(i, j, 2);
+			}
+		}
+		
+		assertTrue("Merging should be possible", true == game5.performMove(MoveDirection.NORTH));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeEAST() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				game5.setPieceAt(i, j, -2);
+			}
+		}
+		
+		assertTrue("Merging should be possible", true == game5.performMove(MoveDirection.EAST));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeSOUTH() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				game5.setPieceAt(i, j, 4096);
+			}
+		}
+		
+		assertTrue("Merging should be possible", true == game5.performMove(MoveDirection.SOUTH));
+	}
+
+	
+	@Test
+	public void testPerformMoveMergeWEST() {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				game5.setPieceAt(i, j, 5000);
+			}
+		}
+		
+		assertTrue("Merging should be possible", true == game5.performMove(MoveDirection.WEST));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeCornerNORTH() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 1 + i * 3 + j);
+			}
+		}
+		
+		assertTrue("Merging should not be possible", false == game3.performMove(MoveDirection.NORTH));
+		
+		game3.setPieceAt(0, 1, 1);
+		assertTrue("Merging should be possible", true == game3.performMove(MoveDirection.NORTH));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeCornerEAST() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 1 + i * 3 + j);
+			}
+		}
+		
+		assertTrue("Merging should not be possible", false == game3.performMove(MoveDirection.EAST));
+		
+		game3.setPieceAt(3, 0, 13);
+		assertTrue("Merging should be possible", true == game3.performMove(MoveDirection.EAST));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeCornerSOUTH() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 1 + i * 3 + j);
+			}
+		}
+		
+		assertTrue("Merging should not be possible", false == game3.performMove(MoveDirection.SOUTH));
+		
+		game3.setPieceAt(4, 1, 15);
+		assertTrue("Merging should be possible", true == game3.performMove(MoveDirection.SOUTH));
+	}
+	
+	
+	@Test
+	public void testPerformMoveMergeCornerWEST() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				game3.setPieceAt(i, j, 1 + i * 3 + j);
+			}
+		}
+		
+		assertTrue("Merging should not be possible", false == game3.performMove(MoveDirection.WEST));
+		
+		game3.setPieceAt(1, 2, 3);
+		assertTrue("Merging should be possible", true == game3.performMove(MoveDirection.WEST));
+	}
+	
+	
+	// Tests for public boolean isMovePossible(MoveDirection direction);
+		@Test
+		public void testIsMovePossibleDirection() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 8; j++) {
+					game2.setPieceAt(i, j, 0);
+				}
+			}
+
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.WEST));
+					
+			game2.setPieceAt(0, 0, 7);
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.WEST));
+			
+			game2.setPieceAt(0, 0, 0);
+			game2.setPieceAt(1, 7, -3);
+			assertTrue("Only piece at lower right corner", true == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Only piece at lower right corner", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Only piece at lower right corner", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Only piece at lower right corner", true == game2.isMovePossible(MoveDirection.WEST));
+			
+			game2.setPieceAt(0, 0, 7);
+			assertTrue("All directions should be possible", true == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("All directions should be possible", true == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("All directions should be possible", true == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("All directions should be possible", true == game2.isMovePossible(MoveDirection.WEST));
+		}
+		
+		
+		@Test
+		public void testIsMovePossibleDirectionFull() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 8; j++) {
+					game2.setPieceAt(i, j, 1 + i * 8 + j);
+				}
+			}
+			
+			assertTrue("Full board, no move should be possible", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Full board, no move should be possible", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Full board, no move should be possible", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Full board, no move should be possible", false == game2.isMovePossible(MoveDirection.WEST));
+		}
+		
+		
+		
+		public void testisMovePossibleMoving() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 8; j++) {
+					game2.setPieceAt(i, j, 0);
+				}
+			}
+
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible(MoveDirection.WEST));
+			assertTrue("Empty board, no move should be possible", false == game2.isMovePossible());
+					
+			game2.setPieceAt(0, 0, 7);
+			// Go in a circle around the board
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.WEST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible());
+			game2.performMove(MoveDirection.EAST);
+
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible());
+			game2.performMove(MoveDirection.SOUTH);	
+
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.EAST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.WEST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible());
+			game2.performMove(MoveDirection.WEST);
+			
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Only piece at upper left corner", false == game2.isMovePossible(MoveDirection.WEST));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Only piece at upper left corner", true == game2.isMovePossible());		
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeNORTH() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					game5.setPieceAt(i, j, 2);
+				}
+			}
+
+			assertTrue("Merging should be possible", true == game5.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Merging should be possible", true == game5.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeEAST() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					game5.setPieceAt(i, j, -2);
+				}
+			}
+
+			assertTrue("Merging should be possible", true == game5.isMovePossible(MoveDirection.EAST));
+			assertTrue("Merging should be possible", true == game5.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeSOUTH() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					game5.setPieceAt(i, j, 4096);
+				}
+			}
+
+			assertTrue("Merging should be possible", true == game5.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Merging should be possible", true == game5.isMovePossible());
+		}
+
+		
+		@Test
+		public void testisMovePossibleMergeWEST() {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					game5.setPieceAt(i, j, 5000);
+				}
+			}
+
+			assertTrue("Merging should be possible", true == game5.isMovePossible(MoveDirection.WEST));
+			assertTrue("Merging should be possible", true == game5.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeCornerNORTH() {
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 3; j++) {
+					game3.setPieceAt(i, j, 1 + i * 3 + j);
+				}
+			}
+
+			assertTrue("Merging should not be possible", false == game3.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Merging should not be possible", false == game3.isMovePossible());
+			
+			game3.setPieceAt(0, 1, 1);
+			assertTrue("Merging should be possible", true == game3.isMovePossible(MoveDirection.NORTH));
+			assertTrue("Merging should be possible", true == game3.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeCornerEAST() {
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 3; j++) {
+					game3.setPieceAt(i, j, 1 + i * 3 + j);
+				}
+			}
+
+			assertTrue("Merging should not be possible", false == game3.isMovePossible(MoveDirection.EAST));
+			assertTrue("Merging should not be possible", false == game3.isMovePossible());
+			
+			game3.setPieceAt(3, 0, 13);
+			assertTrue("Merging should be possible", true == game3.isMovePossible(MoveDirection.EAST));
+			assertTrue("Merging should be possible", true == game3.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeCornerSOUTH() {
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 3; j++) {
+					game3.setPieceAt(i, j, 1 + i * 3 + j);
+				}
+			}
+
+			assertTrue("Merging should not be possible", false == game3.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Merging should not be possible", false == game3.isMovePossible());
+			
+			game3.setPieceAt(4, 1, 15);
+			assertTrue("Merging should be possible", true == game3.isMovePossible(MoveDirection.SOUTH));
+			assertTrue("Merging should be possible", true == game3.isMovePossible());
+		}
+		
+		
+		@Test
+		public void testisMovePossibleMergeCornerWEST() {
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 3; j++) {
+					game3.setPieceAt(i, j, 1 + i * 3 + j);
+				}
+			}
+
+			assertTrue("Merging should not be possible", false == game3.isMovePossible(MoveDirection.WEST));
+			assertTrue("Merging should not be possible", false == game3.isMovePossible());
+			
+			game3.setPieceAt(1, 2, 3);
+			assertTrue("Merging should be possible", true == game3.isMovePossible(MoveDirection.WEST));
+			assertTrue("Merging should be possible", true == game3.isMovePossible());
+		}
 }

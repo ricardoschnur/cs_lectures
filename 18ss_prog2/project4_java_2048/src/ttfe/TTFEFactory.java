@@ -56,7 +56,7 @@ public class TTFEFactory {
 			player = new HumanPlayer();
 		}
 		else {
-			player = new AutoPlayer_strategy();
+			player = new AutoPlayer_MonteCarlo();
 		}
 		return player;
 	}

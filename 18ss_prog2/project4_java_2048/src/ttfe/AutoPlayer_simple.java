@@ -1,6 +1,6 @@
 package ttfe;
 
-public class AutoPlayer_strategy implements PlayerInterface {
+public class AutoPlayer_simple implements PlayerInterface {
 
 	@Override
 	public MoveDirection getPlayerMove(SimulatorInterface game, UserInterface ui) {

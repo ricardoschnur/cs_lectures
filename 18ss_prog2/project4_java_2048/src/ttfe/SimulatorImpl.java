@@ -1,7 +1,8 @@
 /**
- * 
+ *
  */
 package ttfe;
+
 import java.util.Random;
 
 /**
@@ -9,196 +10,204 @@ import java.util.Random;
  *
  */
 public class SimulatorImpl implements SimulatorInterface {
-	  private int rows;
-	  private int cols;
-	  private int free;           // number of free positions on the field
-	  private int score;
-	  private int moves;
-	  private Random rng;
-	  private Tile[][] field;
-	
-	  
-	  // Constructor for new SimulatorImpl
-	  public SimulatorImpl(int rows, int cols, Random r) {
-	    this.rows = rows;
-	    this.cols = cols;
-	    this.free = rows * cols;
-	    this.score = 0;
-	    this.moves = 0;
-	    this.rng = r;
+	private int rows;
+	private int cols;
+	private int free; // number of free positions on the field
+	private int score;
+	private int moves;
+	private Random rng;
+	private int[][] field;
+	private boolean[][] merged;
 
-	    Tile[][] field;
-	    field = new Tile[rows][];
-	    for (int i = 0; i < rows; ++i) {
-	      field[i] = new Tile[cols];
-	      for (int j = 0; j < cols; ++j) {
-	        field[i][j] = new Tile();
-	      }
-	    }
+	// Constructor for new SimulatorImpl
+	public SimulatorImpl(int rows, int cols, Random r) {
+		this.rows = rows;
+		this.cols = cols;
+		free = rows * cols;
+		score = 0;
+		moves = 0;
+		rng = r;
 
-	    this.field = field;
+		int[][] field;
+		boolean[][] merged;
+		field = new int[rows][];
+		merged = new boolean[rows][];
+		for (int i = 0; i < rows; ++i) {
+			field[i] = new int[cols];
+			merged[i] = new boolean[cols];
+			for (int j = 0; j < cols; ++j) {
+				field[i][j] = 0;
+				merged[i][j] = false;
+			}
+		}
 
-	    for (int i = 0; i < this.rows; ++i) {
-	      for (int j = 0; j < this.cols; ++j) {
-	        this.setPieceAt(i, j, 0);
-	        this.setFullAt(i, j, false);
-	      }
-	    }
+		this.field = field;
+		this.merged = merged;
 
-	    // Add two Tiles
-	    this.addPiece();
-	    this.addPiece();
-	  }
-	  	  
-	  
-	  // Marks the position (row,col) as full (true) or empty (false)
-	  private void setFullAt(int row, int col, boolean bool){
-	    this.field[row][col].setFull(bool);
-	  }
-	  
-	  
-	  // Returns true if position (row,col) is full, false if empty
-	  private boolean getFullAt(int row, int col) {
-	    return this.field[row][col].getFull();
-	  }
-	  	  
+		for (int i = 0; i < this.rows; ++i) {
+			for (int j = 0; j < this.cols; ++j) {
+				setPieceAt(i, j, 0);
+			}
+		}
 
-	  // Returns a copy of the SimulatorImpl
-	  public SimulatorImpl copySimulatorImpl(){
-	    SimulatorImpl field = new SimulatorImpl(this.rows, this.cols, this.rng);
-	    field.free = this.free;
-	    field.score = this.score;
-	    field.moves = this.moves;
+		// Add two Tiles
+		addPiece();
+		addPiece();
+	}
 
-	    int val;
-	    boolean full;
-
-	    for (int i = 0; i < this.rows; ++i) {
-	      for (int j = 0; j < cols; ++j) {
-	        val = this.getPieceAt(i, j);
-	        full = this.getFullAt(i, j);
-
-	        field.setPieceAt(i, j, val);
-	        field.setFullAt(i, j, full);
-	      }
-	    }
-
-	    return field;
-	  }
-	  
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#addPiece()
 	 */
 	@Override
 	public void addPiece() {
-			assert this.free > 0;
-		
-		    // Generate a random integer in [0, this.free)
-		    int n = this.rng.nextInt(this.free);
+		assert free > 0;
 
-		    // Find position (i,j) of the correct Tile
-		    int current = 0;
-		    int x = 0;
-		    int y = 0;
-		    for (int i = 0; i < this.rows && current <= n; ++i) {
-		      for (int j = 0; j < this.cols && current <= n; ++j) {
-		        // Increase counter if current Tile is empty
-		        if ( !(this.getFullAt(i, j)) ) {
-		          current += 1;
-		          x = i;
-		          y = j;
-		        }
-		      }
-		    }
+		// Generate a random integer in [0, this.free)
+		int n = rng.nextInt(free);
 
-		    n = 2;
-		    if ( this.rng.nextInt(10) == 0 ) {
-		    	n = 4;
-		    }
+		// Find position (i,j) of the correct Tile
+		int current = 0;
+		int x = 0;
+		int y = 0;
+		for (int i = 0; i < rows && current <= n; ++i) {
+			for (int j = 0; j < cols && current <= n; ++j) {
+				// Increase counter if current Tile is empty
+				if (!getFullAt(i, j)) {
+					current += 1;
+					x = i;
+					y = j;
+				}
+			}
+		}
 
-		    this.setPieceAt(x, y, n);
+		n = 2;
+		if (rng.nextInt(10) == 0) {
+			n = 4;
+		}
+
+		setPieceAt(x, y, n);
 	}
 
-	
-	/* (non-Javadoc)
+	// Returns a copy of the SimulatorImpl
+	public SimulatorImpl copySimulatorImpl() {
+		SimulatorImpl field = new SimulatorImpl(rows, cols, rng);
+		field.free = free;
+		field.score = score;
+		field.moves = moves;
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				field.setPieceAt(i, j, getPieceAt(i, j));
+			}
+		}
+
+		return field;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getBoardHeight()
 	 */
 	@Override
 	public int getBoardHeight() {
-		assert this.cols >= 2;
-		return this.cols;
+		assert cols >= 2;
+		return cols;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getBoardWidth()
 	 */
 	@Override
 	public int getBoardWidth() {
-		assert this.rows >= 2;
-		return this.rows;
+		assert rows >= 2;
+		return rows;
 	}
 
-	/* (non-Javadoc)
+	// Returns true if position (row,col) is full, false if empty
+	private boolean getFullAt(int row, int col) {
+		return field[row][col] != 0;
+	}
+
+	private boolean getMergedAt(int x, int y) {
+		assert x >= 0 && x < rows && y >= 0 && y < cols;
+		return merged[x][y];
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getNumMoves()
 	 */
 	@Override
 	public int getNumMoves() {
-		assert this.moves >= 0;
-		return this.moves;
+		assert moves >= 0;
+		return moves;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getNumPieces()
 	 */
 	@Override
 	public int getNumPieces() {
-		int n = this.rows * this.cols - this.free;
+		int n = rows * cols - free;
 		assert n >= 0;
 		return n;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getPieceAt(int, int)
 	 */
 	@Override
 	public int getPieceAt(int x, int y) {
-		assert x >= 0 && x < this.rows && y >= 0 && y < this.cols;
-		return this.field[x][y].getPiece();
+		assert x >= 0 && x < rows && y >= 0 && y < cols;
+		return field[x][y];
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#getPoints()
 	 */
 	@Override
 	public int getPoints() {
-		assert this.score >= 0;
-		return this.score;
+		assert score >= 0;
+		return score;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#isMovePossible()
 	 */
 	@Override
 	public boolean isMovePossible() {
-		if ( isSpaceLeft() && getNumPieces() > 0) {
+		if (isSpaceLeft() && getNumPieces() > 0) {
 			return true;
 		}
-		
+
 		SimulatorImpl new_field = copySimulatorImpl();
-	    return (new_field.moveNorth() == true)
-	                    || (new_field.moveSouth() == true)
-	                    || (new_field.moveEast() == true)
-	                    || (new_field.moveWest() == true);
+		return new_field.moveNorth() == true || new_field.moveSouth() == true || new_field.moveEast() == true
+				|| new_field.moveWest() == true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#isMovePossible(ttfe.MoveDirection)
 	 */
 	@Override
 	public boolean isMovePossible(MoveDirection direction) {
 		SimulatorImpl new_field = copySimulatorImpl();
-		
+
 		switch (direction) {
 		case NORTH:
 			return new_field.moveNorth() == true;
@@ -209,197 +218,207 @@ public class SimulatorImpl implements SimulatorInterface {
 		case WEST:
 			return new_field.moveWest() == true;
 		}
-		
+
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#isSpaceLeft()
 	 */
 	@Override
 	public boolean isSpaceLeft() {
-		return this.free > 0;
+		return free > 0;
 	}
 
-	/* (non-Javadoc)
+	// Merges Tiles in position (x1, y1) and (x2, y2)
+	// Produces merged Tile at (x1,y1) and empty Tile at (x2,y2)
+	private void mergeTiles(int x1, int y1, int x2, int y2) {
+		int val1 = getPieceAt(x1, y1);
+		int val2 = getPieceAt(x2, y2);
+
+		assert val1 == val2;
+
+		int doubled_value = 2 * val1;
+		setPieceAt(x1, y1, doubled_value);
+		setMergedAt(x1, y1, true);
+		setPieceAt(x2, y2, 0);
+
+		score += doubled_value;
+	}
+
+	// Perform movement of tile t from (x,y) to (x+dx, y+dy) if possible
+	// Handle merging, borders, no move possible
+	// return 1if it moved tiles, 0 otherwise
+	private int move(int x, int y, int dx, int dy) {
+		// If Tile is empty, do nothing
+		if (!getFullAt(x, y)) {
+			return 0;
+		}
+
+		// Tile is at border of grid
+		boolean b = dx == -1 && x == 0 || dx == 1 && x == rows - 1 || dy == -1 && y == 0
+				|| dy == 1 && y == cols - 1;
+		if (b) {
+			return 0;
+		}
+
+		// Not at border
+		if (!getFullAt(x + dx, y + dy)) {
+			// recursively move Tile up as far as possible
+			moveTile(x, y, x + dx, y + dy);
+			move(x + dx, y + dy, dx, dy);
+			return 1;
+		}
+		if (getPieceAt(x, y) == getPieceAt(x + dx, y + dy)) {
+			// if Tiles were already merged this turn do nothing, else merge
+			if (getMergedAt(x, y) == true || getMergedAt(x + dx, y + dy) == true) {
+				return 0;
+			}
+			mergeTiles(x + dx, y + dy, x, y);
+			return 1;
+		}
+		// Should not reach this point
+		return 0;
+	}
+
+	private boolean moveEast() {
+		int movecounter = 0;
+		for (int i = rows - 1; i >= 0; --i) {
+			for (int j = 0; j < cols; ++j) {
+				movecounter += move(i, j, 1, 0);
+			}
+		}
+		return movecounter > 0;
+	}
+
+	private boolean moveNorth() {
+		int movecounter = 0;
+		for (int j = 1; j < cols; ++j) {
+			for (int i = 0; i < rows; ++i) {
+				movecounter += move(i, j, 0, -1);
+			}
+		}
+		return movecounter > 0;
+	}
+
+	private boolean moveSouth() {
+		int movecounter = 0;
+		for (int j = cols - 1; j >= 0; --j) {
+			for (int i = 0; i < rows; ++i) {
+				movecounter += move(i, j, 0, 1);
+			}
+		}
+		return movecounter > 0;
+	}
+
+	// Moves the Tile in position (x1, y1) to position (x2, y2)
+	private void moveTile(int x1, int y1, int x2, int y2) {
+		setPieceAt(x2, y2, getPieceAt(x1, y1));
+		setPieceAt(x1, y1, 0);
+	}
+
+	private boolean moveWest() {
+		int movecounter = 0;
+		for (int i = 1; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				movecounter += move(i, j, -1, 0);
+			}
+		}
+		return movecounter > 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#performMove(ttfe.MoveDirection)
 	 */
 	@Override
 	public boolean performMove(MoveDirection direction) {
 		boolean b = false;
-		
-	    switch (direction) {
-	      case NORTH:
-	      b = moveNorth();
-	      break;
 
-	      case EAST:
-	      b = moveEast();
-	      break;
+		switch (direction) {
+		case NORTH:
+			b = moveNorth();
+			break;
 
-	      case WEST:
-	      b = moveWest();
-	      break;
+		case EAST:
+			b = moveEast();
+			break;
 
-	      case SOUTH:
-	      b = moveSouth();
-	      break;
-	    }
-	    
-	    if (b == true) {
-	    	this.moves += 1;
-	    }
-	    
-	    return b;
+		case WEST:
+			b = moveWest();
+			break;
+
+		case SOUTH:
+			b = moveSouth();
+			break;
+		}
+
+		if (b == true) {
+			moves += 1;
+			unsetMerged();
+		}
+
+		return b;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#run(ttfe.PlayerInterface, ttfe.UserInterface)
 	 */
 	@Override
 	public void run(PlayerInterface player, UserInterface ui) {
+		MoveDirection direction;
 		ui.updateScreen(this);
 		while (isMovePossible()) {
-			MoveDirection direction = player.getPlayerMove(this, ui);
-			if (performMove(direction)) {
+			direction = player.getPlayerMove(this, ui);
+			if (!performMove(direction)) {
+				direction = player.getPlayerMove(this, ui);
+			} else {
 				addPiece();
+				ui.updateScreen(this);
 			}
-			ui.updateScreen(this);
 		}
 		ui.showGameOverScreen(this);
 	}
 
-	/* (non-Javadoc)
+	private void setMergedAt(int x, int y, boolean b) {
+		assert x >= 0 && x < rows && y >= 0 && y < cols;
+
+		merged[x][y] = b;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see ttfe.SimulatorInterface#setPieceAt(int, int, int)
 	 */
 	@Override
 	public void setPieceAt(int x, int y, int piece) {
-		assert x >= 0 && x < this.rows && y >= 0 && y < this.cols;
-		
+		assert x >= 0 && x < rows && y >= 0 && y < cols;
+
 		int current = getPieceAt(x, y);
-		
+
 		if (current == 0 && piece != 0) {
-			this.free -= 1;
-			setFullAt(x, y, true);
-		}		
-		
-		if (current != 0 && piece == 0) {
-			this.free += 1;
-			setFullAt(x, y, false);
+			free -= 1;
 		}
-		
-		this.field[x][y].setPiece(piece);
-	}
-	
-	
-	// Moves the Tile in position (x1, y1) to position (x2, y2)
-	private void moveTile(int x1, int y1, int x2, int y2) {
-	  int val = getPieceAt(x1, y1);
-	  boolean full = getFullAt(x1, y1);
 
-	  setPieceAt(x2, y2, val);
-	  setFullAt(x2, y2, full);
+		if (current != 0 && piece == 0) {
+			free += 1;
+		}
 
-	  setPieceAt(x1, y1, 0);
-	  setFullAt(x1, y1, false);
+		field[x][y] = piece;
 	}
 
-	  // Merges Tiles in position (x1, y1) and (x2, y2)
-	  // Produces merged Tile at (x1,y1) and empty Tile at (x2,y2)
-	  private void mergeTiles(int x1, int y1, int x2, int y2) {
-	    int val1 = getPieceAt(x1, y1);
-	    boolean full1 = getFullAt(x1, y1);
+	private void unsetMerged() {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				setMergedAt(i, j, false);
+			}
+		}
 
-	    int val2 = getPieceAt(x2, y2);
-	    boolean full2 = getFullAt(x2, y2);
-
-
-	    assert( val1 == val2 && full1 == true && full2 == true );
-
-	    int doubled_value = 2*val1;
-
-	    setPieceAt(x1, y1, doubled_value);
-
-	    setPieceAt(x2, y2, 0);
-
-	    this.score += doubled_value;
-	  }
-	  
-	  
-	// Perform movement of tile t from (x,y) to (x+dx, y+dy) if possible
-	  // Handle merging, borders, no move possible
-	  // return true if it moved tiles, false otherwise
-	  private int move(int x, int y, int dx, int dy) {
-	    // If Tile is empty, do nothing
-	    if (!getFullAt(x, y)) {
-	      return 0;
-	    }
-
-	    // Tile is at border of grid
-	    boolean b = (dx == -1 && x == 0) || (dx == 1 && x == this.rows - 1)
-	    || (dy == -1 && y == 0) || (dy == 1 && y == this.cols - 1);
-	    if (b) {
-	      return 0;
-	    }
-
-	    // Not at border
-	    if (!getFullAt(x + dx, y + dy)) {
-	      // recursively move Tile up as far as possible
-	      moveTile(x, y, x + dx, y +dy);
-	      move(x + dx, y + dy, dx, dy);
-	      return 1;
-	    }
-	    if ( getPieceAt(x, y) == getPieceAt(x + dx, y +dy) ) {
-	      mergeTiles(x + dx, y + dy, x, y);
-	      return 1;
-	    }
-	    // Should not reach this point
-	    return 0;
-	  }
-	  
-	  private boolean moveWest(){
-		    int movecounter = 0;
-		    for (int i = 1; i < this.rows; ++i) {
-		      for (int j = 0; j < this.cols; ++j) {
-		        movecounter += move(i, j, -1, 0);
-		      }
-		    }
-		    return movecounter > 0;
-		  }
-
-
-		  private boolean moveEast(){
-		    int movecounter = 0;
-		    for (int i = this.rows - 1; i >= 0; --i) {
-		      for (int j = 0; j < this.cols; ++j) {
-		        movecounter += move(i, j, 1, 0);
-		      }
-		    }
-		    return movecounter > 0;
-		  }
-
-
-		  private boolean moveNorth(){
-		    int movecounter = 0;
-		    for (int j = 1; j < this.cols; ++j) {
-		      for (int i = 0; i < this.rows; ++i) {
-		        movecounter += move(i, j, 0, -1);
-		      }
-		    }
-		    return movecounter > 0;
-		  }
-
-
-		  private boolean moveSouth(){
-		    int movecounter = 0;
-		    for (int j = this.cols - 1; j >= 0; --j) {
-		      for (int i = 0; i < this.rows; ++i) {
-		        movecounter += move(i, j, 0, 1);
-		      }
-		    }
-		    return movecounter > 0;
-		  }
+	}
 }
-
-
-

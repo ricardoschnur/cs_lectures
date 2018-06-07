@@ -5,8 +5,8 @@ public interface SimulatorInterface {
 	/**
 	 * Put a new piece to an empty (and random) position on the board.
 	 *
-	 * With a probability of 0.9 the new piece will be a 2, otherwise a 4.
-	 * In your tests, you do not need to verify the probability distribution.
+	 * With a probability of 0.9 the new piece will be a 2, otherwise a 4. In your
+	 * tests, you do not need to verify the probability distribution.
 	 */
 	public void addPiece();
 
@@ -50,22 +50,22 @@ public interface SimulatorInterface {
 	/**
 	 * Test if a move in any direction is possible.
 	 *
-	 * @return Return true, if there is at least one possible move left that
-	 *         will move at least one piece (or merge two).
+	 * @return Return true, if there is at least one possible move left that will
+	 *         move at least one piece (or merge two).
 	 */
 	public boolean isMovePossible();
 
 	/**
 	 * Test if a move in the given direction is possible.
 	 *
-	 * @return Return true, if we can move at least one piece (or merge two) in
-	 *         the given direction.
+	 * @return Return true, if we can move at least one piece (or merge two) in the
+	 *         given direction.
 	 */
 	public boolean isMovePossible(MoveDirection direction);
 
 	/**
-	 * @return Return true, if there is at least one tile left where we could
-	 *         place a new piece.
+	 * @return Return true, if there is at least one tile left where we could place
+	 *         a new piece.
 	 */
 	public boolean isSpaceLeft();
 

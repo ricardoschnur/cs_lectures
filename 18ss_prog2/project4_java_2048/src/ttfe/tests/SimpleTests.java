@@ -500,7 +500,42 @@ public class SimpleTests {
 		assertTrue("Full board, no move should be possible", false == game5.performMove(MoveDirection.WEST));
 	}
 	
+	
+	@Test
+	public void testPerformMoveMergeBehaviour1() {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				game1.setPieceAt(i,j,0);
+			}
+		}
 
+		game1.setPieceAt(0,0,2);
+		game1.setPieceAt(1,0,2);
+		game1.setPieceAt(2,0,4);
+		game1.performMove(MoveDirection.WEST);
+		
+		assertTrue("Only one merge should have happened!" + game1.getPieceAt(0,0) + "," + game1.getPieceAt(1,0), 
+				game1.getPieceAt(0,0) == 4 && game1.getPieceAt(1,0) == 4 );
+	}
+
+	
+	@Test
+	public void testPerformMoveMergeBehaviour2() {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				game1.setPieceAt(i,j,0);
+			}
+		}
+
+		game1.setPieceAt(0,0,4);
+		game1.setPieceAt(1,0,2);
+		game1.setPieceAt(2,0,2);
+		game1.performMove(MoveDirection.WEST);
+		
+		assertTrue("Only one merge should have happened!" + game1.getPieceAt(0,0) + "," + game1.getPieceAt(1,0), 
+				game1.getPieceAt(0,0) == 4 && game1.getPieceAt(1,0) == 4 );
+	}
+	
 	
 	@Test
 	public void testPerformMoveMergeNORTH() {

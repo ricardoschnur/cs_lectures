@@ -9,8 +9,8 @@ import ttfe.TTFEFactory;
 import ttfe.UserInterface;
 
 public class AutoPlayer_MonteCarlo implements PlayerInterface {
-	private int TRIES = 200;
-	private Random r = new Random();
+	private int TRIES = 250;
+	private Random r = new Random(6);
 	private SimulatorInterface copy;
 	private MoveDirection first, direction;
 	private int cols;
@@ -35,6 +35,30 @@ public class AutoPlayer_MonteCarlo implements PlayerInterface {
 			uninitialized = false;
 		}
 
+		// if only one move is possible, perform it
+				isPossibleNorth = game.isMovePossible(MoveDirection.NORTH) ? 1: 0;
+				isPossibleEast = game.isMovePossible(MoveDirection.EAST) ? 1: 0;
+				isPossibleSouth = game.isMovePossible(MoveDirection.SOUTH) ? 1: 0;
+				isPossibleWest = game.isMovePossible(MoveDirection.WEST) ? 1: 0;
+				
+				if ( isPossibleNorth + isPossibleEast +isPossibleSouth + isPossibleWest == 1 ) {
+					if ( isPossibleNorth == 1 ) {
+						return MoveDirection.NORTH;
+					}
+					if ( isPossibleEast == 1 ) {
+						return MoveDirection.EAST;
+					}
+					if ( isPossibleSouth == 1 ) {
+						return MoveDirection.SOUTH;
+					}
+					if ( isPossibleWest == 1 ) {
+						return MoveDirection.WEST;
+					}
+				}
+
+						
+						
+		// do the method
 		moveNorth = 0;
 		moveEast = 0;
 		moveSouth = 0;

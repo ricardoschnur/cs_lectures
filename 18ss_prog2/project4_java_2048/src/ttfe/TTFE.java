@@ -85,6 +85,9 @@ public class TTFE {
 		// r.nextInt(upperBound);
 		// member function.
 		Random r = new Random(randomSeed);
+//		Random r = new Random(-8390354061705970578L);
+//		Random r = new Random(1818607536662613108L);
+		
 
 		// Create an instance of the 2048 simulator.
 		SimulatorInterface game = TTFEFactory.createSimulator(boardWidth, boardHeight, r);
@@ -105,6 +108,13 @@ public class TTFE {
 
 		// Simulate the game until it is over.
 		game.run(player, ui);
+		
+		
+//		For trying out AI
+//		for (int i = 0; i < 20; i++) {
+//			game.run(player, ui);
+//			game = TTFEFactory.createSimulator(boardWidth, boardHeight, r);
+//		}
 	}
 
 	/**

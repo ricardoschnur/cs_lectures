@@ -55,7 +55,6 @@ public class TTFEFactory {
 	 */
 	public static UserInterface createUserInterface(SimulatorInterface game) {
 		UserInterface ui = new GUI(game);
-//		UserInterface ui = new noGUI();
 		return ui;
 	}
 

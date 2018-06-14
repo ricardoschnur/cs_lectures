@@ -14,14 +14,15 @@ import ttfe.UserInterface;
  *
  */
 public class AutoPlayer_random implements PlayerInterface {
+	private Random r = new Random();
+	private int n;
 
 	/**
 	 * Start with a simple player that chooses moves at random
 	 */
 	@Override
 	public MoveDirection getPlayerMove(SimulatorInterface game, UserInterface ui) {
-		Random r = new Random();
-		int n = r.nextInt(4);
+		n = r.nextInt(4);
 
 		if (n == 0 && game.isMovePossible(MoveDirection.NORTH)) {
 			return MoveDirection.NORTH;

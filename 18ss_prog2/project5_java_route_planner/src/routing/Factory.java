@@ -16,8 +16,8 @@ public class Factory {
 	 *             If an Input/Output error occurs.
 	 */
 	public static Graph createGraphFromMap(String fileName) throws IOException {
-		// TODO: Implement me.
-		return null;
+		Graph G = GraphImpl.fromFile(fileName);
+		return G;
 	}
 
 	/**
@@ -29,8 +29,8 @@ public class Factory {
 	 * @return A node finder algorithm for that graph.
 	 */
 	public static NodeFinder createNodeFinder(Graph g) {
-		// TODO: Implement me.
-		return null;
+		NodeFinder nf = new NodeFinderImpl(g);
+		return nf;
 	}
 
 	/**
@@ -56,8 +56,8 @@ public class Factory {
 	 * @return A routing algorithm suitable for that graph.
 	 */
 	public static RoutingAlgorithm createRoutingAlgorithm(Graph g) {
-		// TODO: Implement me.
-		return null;
+		RoutingAlgorithm ra = new RoutingAlgorithmDijkstraHeuristic();
+		return ra;
 	}
 
 }
